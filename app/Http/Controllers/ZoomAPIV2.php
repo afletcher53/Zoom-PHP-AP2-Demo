@@ -24,9 +24,15 @@ class ZoomAPIV2 extends Controller
         $this->headers = [
             'Authorization' => 'Bearer ' . $this->jwt,
             'Accept'        => 'application/json',
+            'content-type' => 'application/json'
         ];
     }
 
+      //------------------//
+     //  User API ROUTES //
+    //------------------//
+
+    //List all the meetings that were scheduled for a user (meeting host).
     public function users() {
         try {
             $response = $this->client->request('GET', 'users', [
@@ -40,6 +46,10 @@ class ZoomAPIV2 extends Controller
         return $response;
     }
 
+      //----------------------//
+     //  Webinar API ROUTES  //
+    //----------------------//
+
     //Use this API to list all the webinars that are scheduled by or on-behalf a user (Webinar host).
     public function listwebinars() {
         try {
@@ -50,7 +60,6 @@ class ZoomAPIV2 extends Controller
         }
         catch (\GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
-            $responseBodyAsString = $response->getBody()->getContents();
         }
         return $response;
     }
@@ -65,7 +74,6 @@ class ZoomAPIV2 extends Controller
         }
         catch (\GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
-            $responseBodyAsString = $response->getBody()->getContents();
         }
         return $response;
     }
@@ -80,7 +88,6 @@ class ZoomAPIV2 extends Controller
         }
         catch (\GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
-            $responseBodyAsString = $response->getBody()->getContents();
         }
         return $response;
     }
@@ -95,8 +102,56 @@ class ZoomAPIV2 extends Controller
         }
         catch (\GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
-            $responseBodyAsString = $response->getBody()->getContents();
         }
         return $response;
+    }
+
+      //----------------------//
+     // Meeting API ROUTES   //
+    //----------------------//
+
+    //list users meetings
+    public function listmeetings() {
+        try {
+            $url = 'users/' . request()->route()->parameter('userId') . '/meetings';
+            $response = $this->client->request('GET', $url , [
+            'headers' => $this->headers
+        ]);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+        }
+        return $response;
+    }
+
+    //Create a meeting
+    public function createmeeting() {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://api.zoom.us/v2/users/". request()->route()->parameter('userId') . "/meetings",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => '{"topic": "hello", "type": 2, "schedule_for": "QTk1g81ES_-8FMCOV9Q7bg", "start_time": "2020-05-31T12:00:00Z", "duration": 30}',
+        CURLOPT_HTTPHEADER => array(
+            "authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOm51bGwsImlzcyI6IkJ4bjBDRVpLUTFPa3Q5Z29zY3ltQ3ciLCJleHAiOjE1ODkyODgzMzgsImlhdCI6MTU4OTI4Mjk0MH0.3wZcm1N0dSBtwjj2ICnSvVo1X_X68938YeLeRASueMw",
+            "content-type: application/json"
+        ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+        return $err;
+        } else {
+        return $response;
+        }
     }
 }

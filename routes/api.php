@@ -20,6 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('ZoomAPI2/users', 'ZoomAPIV2@users');
 Route::get('ZoomAPI2/users/{userId}', 'ZoomAPIV2@listwebinars');
+Route::get('ZoomAPI2/users/{userId}/meetings', 'ZoomAPIV2@listmeetings');
+Route::post('ZoomAPI2/users/{userId}/meetings', 'ZoomAPIV2@createmeeting');
 Route::get('ZoomAPI2/webinars/{webinarId}', 'ZoomAPIV2@getwebinars');
 Route::get('ZoomAPI2/metrics/webinars/{webinarId}/participants', 'ZoomAPIV2@getwebinarparticipants');
 Route::get('ZoomAPI2/metrics/webinars', 'ZoomAPIV2@listallwebinars');
