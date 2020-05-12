@@ -28,33 +28,75 @@ class ZoomAPIV2 extends Controller
     }
 
     public function users() {
-        $response = $this->client->request('GET', 'users', [
-            'headers' => $this->headers
-        ]);
+        try {
+            $response = $this->client->request('GET', 'users', [
+                'headers' => $this->headers
+            ]);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+        }
         return $response;
     }
 
+    //Use this API to list all the webinars that are scheduled by or on-behalf a user (Webinar host).
     public function listwebinars() {
-        $url = 'users/' . request()->route()->parameter('userId') . '/webinars';
-        $response = $this->client->request('GET', $url , [
-            'headers' => $this->headers
-        ]);
-        return $reponse;
-    }
-
-    public function getwebinars() {
-        $url = 'webinars/' . request()->route()->parameter('webinarId');
-        $response = $this->client->request('GET', $url , [
-            'headers' => $this->headers
-        ]);
+        try {
+            $url = 'users/' . request()->route()->parameter('userId') . '/webinars';
+            $response = $this->client->request('GET', $url , [
+                'headers' => $this->headers
+            ]);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+        }
         return $response;
     }
 
+    //Use this API to get details of a scheduled webinar
+    public function getwebinars() {
+        try {
+            $url = 'webinars/' . request()->route()->parameter('webinarId');
+            $response = $this->client->request('GET', $url , [
+                'headers' => $this->headers
+            ]);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+        }
+        return $response;
+    }
+
+    //Retrieve details on participants from live or past webinars.
     public function getwebinarparticipants() {
-        $url = 'metrics/webinars/' . request()->route()->parameter('webinarId') . '/participants';
-        $response = $this->client->request('GET', $url , [
+        try {
+            $url = 'metrics/webinars/' . request()->route()->parameter('webinarId') . '/participants';
+            $response = $this->client->request('GET', $url , [
             'headers' => $this->headers
         ]);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+        }
+        return $response;
+    }
+
+    //List all the live or past webinars from a specified period of time.
+    public function listallwebinars() {
+        $url = 'metrics/webinars';
+        try {
+            $response = $this->client->request('GET', $url , [
+                'headers' => $this->headers
+            ]);
+        }
+        catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+        }
         return $response;
     }
 }
