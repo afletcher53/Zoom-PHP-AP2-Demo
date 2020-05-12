@@ -9,12 +9,10 @@ use \Firebase\JWT\JWT;
 
 class ZoomAPIV2 extends Controller
 {
-
-
     public function __construct(Request $request) {
         //generate a 60 second JWT token on the fly
-        $api_secret = '';
-        $api_key = '';
+        $api_secret = $_ENV['ZOOM_SECRET_KEY'];
+        $api_key = $_ENV['ZOOM_API_KEY'];
         $payload = array(
         'iss' => $api_key,
         'exp' => (time() + 60)
